@@ -1,31 +1,36 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 /* @flow */
-import { applyStyles } from '../utils/dom/css';
-import { footerStyle } from '../styles';
+import React, { useContext } from 'react';
+import { ThemeContext } from '../iframeScript';
+import type { Theme } from '../styles';
 
-function createFooter(document: Document) {
-  const div = document.createElement('div');
-  applyStyles(div, footerStyle);
-  div.appendChild(
-    document.createTextNode(
-      'This screen is visible only in development. It will not appear if the app crashes in production.'
-    )
+const footerStyle = (theme: Theme) => ({
+  fontFamily: 'sans-serif',
+  color: theme.footer,
+  marginTop: '0.5rem',
+  flex: '0 0 auto',
+});
+
+type FooterPropsType = {|
+  line1: string,
+  line2?: string,
+|};
+
+function Footer(props: FooterPropsType) {
+  const theme = useContext(ThemeContext);
+  return (
+    <div style={footerStyle(theme)}>
+      {props.line1}
+      <br />
+      {props.line2}
+    </div>
   );
-  div.appendChild(document.createElement('br'));
-  div.appendChild(
-    document.createTextNode(
-      'Open your browser’s developer console to further inspect this error.'
-    )
-  );
-  return div;
 }
 
-export { createFooter };
+export default Footer;
