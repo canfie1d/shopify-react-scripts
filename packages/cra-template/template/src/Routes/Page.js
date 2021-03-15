@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import Context from './Contexts/AppStore';
 import { useLocation } from 'react-router-dom';
 import {
   showLoadingIndicator,
@@ -9,37 +10,38 @@ import {
 import './page.css';
 
 const Page = props => {
+  const [state, dispatch] = useContext(Context);
   const location = useLocation();
 
   //componentWillMount
   useEffect(() => {
     showLoadingIndicator();
-    let page = props.location.pathname;
+    let page = location.pathname;
     getData(page, 'page');
   }, []);
 
   // componentWillReceiveProps
   useEffect(() => {
     let newPage = location.pathname;
-    let currentPage = props.location.pathname;
+    let currentPage = location.pathname;
     if (newPage !== currentPage) {
       showLoadingIndicator();
       getData(newPage, 'page');
     }
-  }, []);
+  }, [location.pathname]);
 
   // componentDidUpdate
   useEffect(() => {
     if (
-      Object.keys(props.page).length !== 0 &&
-      Object.keys(props.header).length !== 0
+      Object.keys(state.page).length !== 0 &&
+      Object.keys(state.header).length !== 0
     ) {
       hideLoadingIndicator();
-      changeSeo(props.page, props.header.shop_name);
+      changeSeo(state.page, state.header.shop_name);
     }
-  }, [props.page, props.header, props.header.shop_name]);
+  }, [state.page, state.header, state.header.shop_name]);
 
-  const page = props.page;
+  const page = state.page;
   let title, content;
   if (Object.keys(page).length !== 0) {
     title = <h1 className="page__title">{page.title}</h1>;

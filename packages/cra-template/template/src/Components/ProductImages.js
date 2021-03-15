@@ -1,10 +1,14 @@
-import * as actions from '../../actions/actionCreators';
+import { useContext } from 'react';
+import Context from './Contexts/AppStore';
 
 const ProductImages = props => {
-  const [state, dispatch] = useContext(Context);
+  const [state, dispatch] = useContext(Context); // eslint-disable-line
 
   const changeFeaturedImage = image => {
-    dispatch(actions.changeFeaturedImage(image));
+    dispatch({
+      type: 'CHANGE_FEATURED_IMAGE',
+      payload: { featured_image: image },
+    });
   };
 
   const images = props.images;

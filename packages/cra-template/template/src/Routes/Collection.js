@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import Context from './Contexts/AppStore';
 import { useLocation } from 'react-router-dom';
 import Products from './Products';
 import Pagination from './Pagination';
@@ -11,13 +12,15 @@ import {
 } from '../../helpers/helpers';
 
 const Collection = props => {
+  const [state] = useContext(Context);
+
   const location = useLocation();
 
   // componentWillMount
   useEffect(() => {
     showLoadingIndicator();
-    let collection = props.location.pathname;
-    let page = props.location.search;
+    let collection = location.pathname;
+    let page = location.search;
     page = page.split('=')[1];
     if (page === '') {
       page = 1;
@@ -26,12 +29,12 @@ const Collection = props => {
       collection = '/collections/home';
     }
     getData(collection, 'collection', page);
-  }, []);
+  }, []); // eslint-disable-line
 
   // componentWillReceiveProps(nextProps)
   useEffect(() => {
-    let newCollection = props.location.pathname;
-    let newPage = props.location.search;
+    let newCollection = location.pathname;
+    let newPage = location.search;
     if (newPage !== location.search) {
       showLoadingIndicator();
     }
@@ -42,37 +45,34 @@ const Collection = props => {
       }
       getData(newCollection, 'collection');
     }
-  }, [props.location.pathname, props.location.search]);
+  }, [location.pathname, location.search]);
 
   // componentDidUpdate
   useEffect(() => {
     if (
-      props.location.pathname !== '/' &&
-      Object.keys(props.header).length !== 0 &&
-      Object.keys(props.collection).length !== 0
+      location.pathname !== '/' &&
+      Object.keys(state.header).length !== 0 &&
+      Object.keys(state.collection).length !== 0
     ) {
       hideLoadingIndicator();
-      changeSeo(props.collection, props.header.shop_name);
+      changeSeo(state.collection, state.header.shop_name);
     }
   }, [
-    props.location.pathname,
-    props.header,
-    props.header.shop_name,
-    props.collection,
+    location.pathname,
+    state.header,
+    state.header.shop_name,
+    state.collection,
   ]);
 
   let products, pagination;
-  let collection = props.collection;
+  let collection = state.collection;
   let hero;
-  let template = props.template;
+  let template = state.template;
   if (Object.keys(collection).length !== 0) {
     products = <Products products={collection.products} />;
     if (collection.pages > 1) {
       pagination = (
-        <Pagination
-          pages={collection.pages}
-          collection={props.location.pathname}
-        />
+        <Pagination pages={collection.pages} collection={location.pathname} />
       );
     }
     if (template !== 'home') {

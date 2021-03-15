@@ -1,22 +1,29 @@
-import * as actions from '../../actions/actionCreators';
+import { useContext } from 'react';
+import { Context } from '../Contexts/AppStore';
 
 const LineItem = props => {
-  const [state, dispatch] = useContext(Context);
+  const [state, dispatch] = useContext(Context); // eslint-disable-line
 
   const decrementQuantity = () => {
     const operation = 'decrement';
     if (props.line_item.quantity > 1) {
-      dispatch(actions.updateQuantityInCart(props.id, operation));
+      dispatch({
+        type: 'UPDATE_QUANTITY',
+        payload: { id: props.id, operation: operation },
+      });
     }
   };
 
   const incrementQuantity = () => {
     const operation = 'increment';
-    dispatch(actions.updateQuantityInCart(props.id, operation));
+    dispatch({
+      type: 'UPDATE_QUANTITY',
+      payload: { id: props.id, operation: operation },
+    });
   };
 
   const removeLineItemFromCart = () => {
-    dispatch(actions.removeItemFromCart(props.id));
+    dispatch({ type: 'REMOVE_ITEM', payload: { id: props.id } });
   };
 
   let variant;

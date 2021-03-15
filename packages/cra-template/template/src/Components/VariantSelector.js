@@ -1,19 +1,21 @@
-import * as actions from '../../actions/actionCreators';
+import { useContext } from 'react';
+import Context from './Contexts/AppStore';
 
 const VariantSelector = props => {
-  const [state, dispatch] = useContext(Context);
+  const [state, dispatch] = useContext(Context); // eslint-disable-line
 
   const logChange = e => {
     let variantId = e.target.value;
     let variantPrice = props.variants[variantId].price;
     let variantComparePrice = props.variants[variantId].compare_at_price;
-    dispatch(
-      actions.changeSelectedVariant(
-        variantId,
-        variantPrice,
-        variantComparePrice
-      )
-    );
+    dispatch({
+      type: 'CHANGE_SELECTED_VARIANT',
+      payload: {
+        id: variantId,
+        price: variantPrice,
+        comparePrice: variantComparePrice,
+      },
+    });
   };
 
   let variants = props.variants;

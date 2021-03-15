@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import Context from './Contexts/AppStore';
+import { useLocation } from 'react-router-dom';
 import SearchItem from './SearchItem';
 import { changeSeo, hideLoadingIndicator } from '../../helpers/helpers';
 import './search.css';
 
 const SearchResults = props => {
-  const history = useHistory();
+  const [state] = useContext(Context);
+  const location = useLocation();
   const [searchResults, setSearchResults] = useState([]);
   const [searchExpression, setSearchExpression] = useState('');
 
   // componentWillMount
   useEffect(() => {
-    const data = props.data;
-    let search = history.location.search;
+    const data = state.data;
+    let search = location.search;
     search = search.split('=')[1];
     search = search.toLowerCase();
 
@@ -46,11 +48,11 @@ const SearchResults = props => {
 
   // componentWillReceiveProps
   useEffect(() => {
-    const data = props.data;
+    const data = state.data;
     const newData = nextProps.data;
     let oldLength = Object.keys(data).length;
     let newLength = Object.keys(newData).length;
-    let search = history.location.search;
+    let search = location.search;
     let newSearch = false;
     search = search.split('=')[1];
     search = search.toLowerCase();
@@ -86,22 +88,21 @@ const SearchResults = props => {
     }
     if (!newSearch) results = searchResults.concat(results);
     setSearchResults(results);
-  }, [props.data]);
+  }, [state.data]);
 
   // componentDidUpdate
   useEffect(() => {
     if (
-      Object.keys(props.header).length !== 0 &&
-      Object.keys(props.data).length !== 0
+      Object.keys(state.header).length !== 0 &&
+      Object.keys(state.data).length !== 0
     ) {
-      changeSeo('', props.header.shop_name, 'Search page', 'Search');
+      changeSeo('', state.header.shop_name, 'Search page', 'Search');
       hideLoadingIndicator();
     }
-  }, [props.header, props.data, props.header.shop_name]);
+  }, [state.header, state.data, state.header.shop_name]);
 
-  const data = props.data;
-  const searchResults = searchResults;
-  let search = props.history.location.search;
+  const data = state.data;
+  let search = location.search;
   search = search.split('=')[1];
   search = search.toLowerCase();
   let searchResultsItems = Object.keys(searchResults).map(key => {

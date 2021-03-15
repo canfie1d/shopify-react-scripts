@@ -1,12 +1,13 @@
+import { useContext } from 'react';
+import Context from './Contexts/AppStore';
 import LineItem from './LineItem';
-import * as actions from '../../actions/actionCreators';
 import { shopifyStoreUrl } from '../../helpers/helpers';
 
 const Cart = props => {
-  const [state, dispatch] = useContext(Context);
+  const [state, dispatch] = useContext(Context); // eslint-disable-line
 
   const closeCart = () => {
-    dispatch(actions.closeCart());
+    dispatch({ type: 'CLOSE_CART' });
   };
 
   const openCheckout = url => {

@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import Context from './Contexts/AppStore';
 import { useLocation } from 'react-router-dom';
 import VariantSelector from './VariantSelector';
 import ProductImages from './ProductImages';
@@ -8,7 +9,6 @@ import {
   hideLoadingIndicator,
   changeSeo,
 } from '../../helpers/helpers';
-import * as actions from '../../actions/actionCreators';
 
 const Product = props => {
   const [state, dispatch] = useContext(Context);
@@ -16,14 +16,14 @@ const Product = props => {
   //componentWillMount
   useEffect(() => {
     showLoadingIndicator();
-    let productUrl = props.location.pathname;
+    let productUrl = location.pathname;
     getData(productUrl, 'product');
-  }, []);
+  }, []); // eslint-disable-line
 
   // componentWillReceiveProps
   useEffect(() => {
     let newProduct = location.pathname;
-    let currentProduct = props.location.pathname;
+    let currentProduct = location.pathname;
     if (newProduct !== currentProduct) {
       showLoadingIndicator();
       getData(newProduct, 'product');
@@ -33,18 +33,18 @@ const Product = props => {
   //componentDidUpdate
   useEffect(() => {
     if (
-      Object.keys(props.product).length !== 0 &&
-      Object.keys(props.header).length !== 0
+      Object.keys(state.product).length !== 0 &&
+      Object.keys(state.header).length !== 0
     ) {
       hideLoadingIndicator();
-      changeSeo(props.product, props.header.shop_name);
+      changeSeo(state.product, state.header.shop_name);
     }
-  }, [props.product, props.header, props.header.shop_name]);
+  }, [state.product, state.header, state.header.shop_name]);
 
   const addVariantToCart = () => {
-    let product = props.product;
-    let variantId = props.product.selected_variant;
-    let currency = props.product.currency;
+    let product = state.product;
+    let variantId = state.product.selected_variant;
+    let currency = state.product.currency;
     let cartObject = {
       title: product.title,
       image: product.featured_image,
@@ -53,12 +53,15 @@ const Product = props => {
       option: product.options[0],
       variant: product.variants[variantId].title,
     };
-    dispatch(actions.addVariantToCart(cartObject, variantId, currency));
-    if (!props.cart.open) dispatch(actions.openCart());
+    dispatch({
+      type: 'ADD_VARIANT_TO_CART',
+      payload: { id: variantId, product: cartObject, currency: currency },
+    });
+    if (!state.cart.open) dispatch({ type: 'OPEN_CART' });
   };
   const quantityChange = e => {
     let quantity = parseInt(e.target.value, 10);
-    dispatch(actions.changeSelectedQuantity(quantity));
+    dispatch({ type: 'UPDATE_QUANTITY', payload: { quantity: quantity } });
   };
 
   let variantSelectors, comparePrice, productImages;

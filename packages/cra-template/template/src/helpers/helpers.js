@@ -1,4 +1,3 @@
-import * as actions from '../actions/actionCreators';
 import Client, { Config } from 'shopify-buy';
 
 const shopifyStoreDomain = 'custom-storefront.myshopify.com';
@@ -25,7 +24,7 @@ const getData = (slug, template, page, getAllPages) => {
       object = object.split('start-' + template + '-object')[1];
       object = JSON.parse(object);
       object = object[0];
-      dispatch(actions.getData(template, object, page, getAllPages));
+      // dispatch(actions.getData(template, object, page, getAllPages));
       if (template === 'all-products') {
         if (object['pages'] > page) {
           getData('/collections/all', 'all-products', page + 1);
@@ -83,7 +82,7 @@ const changeSeo = (object, shop_name, shop_description, title) => {
   }
 };
 
-export default {
+export {
   getData,
   shopifyStoreUrl,
   showLoadingIndicator,

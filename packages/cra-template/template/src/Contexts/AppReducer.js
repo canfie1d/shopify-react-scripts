@@ -1,4 +1,6 @@
 const Reducer = (state, action) => {
+  const newState = { ...state };
+
   switch (action.type) {
     case 'ADD_VARIANT_TO_CART':
       if (action.id in newState.items) {
@@ -11,7 +13,6 @@ const Reducer = (state, action) => {
       localStorage.setItem('cart', JSON.stringify(newState));
       return newState;
     case 'UPDATE_QUANTITY':
-      newState = Object.assign({}, state);
       if (action.operation === 'increment') {
         newState.items[action.id].quantity += 1;
       } else {

@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App>{props.children}</App>
+    <App />
   </React.StrictMode>,
   document.getElementById('shopify-storefront')
 );

@@ -1,13 +1,15 @@
 import { useEffect, useState, useContext } from 'react';
+import { Context } from '../Contexts/AppStore';
+import { useLocation } from 'react-router-dom';
 import Navigation from './Navigation';
 import SearchForm from './SearchForm';
 import MobileNavigation from './MobileNavigation';
 import { Link } from 'react-router-dom';
-import * as actions from '../../actions/actionCreators';
 import { getData, changeSeo } from '../../helpers/helpers';
 
 const Header = props => {
   const [state, dispatch] = useContext(Context);
+  const location = useLocation();
   const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
 
   // componentWillMount
@@ -17,23 +19,25 @@ const Header = props => {
 
   // componentDidUpdate
   useEffect(() => {
-    if (
-      props.location.pathname === '/' &&
-      props.header.hasOwnProperty('shop_name')
-    ) {
-      changeSeo(null, props.header.shop_name, props.header.shop_description);
+    if (location.pathname === '/' && state.header.hasOwnProperty('shop_name')) {
+      changeSeo(null, state.header.shop_name, state.header.shop_description);
     }
-  }, [props.location, props.header]);
+  }, [
+    location.pathname,
+    state.header,
+    state.header.shop_description,
+    state.header.shop_name,
+  ]);
 
   const collapseNav = () => {
     setMobileNavIsOpen(!mobileNavIsOpen);
   };
 
   const openCart = () => {
-    dispatch(actions.openCart());
+    dispatch({ type: 'OPEN_CART' });
   };
 
-  let header = props.header;
+  let header = state.header;
   let logo, navigation, mobileNavigation;
 
   if (Object.keys(header).length !== 0) {
